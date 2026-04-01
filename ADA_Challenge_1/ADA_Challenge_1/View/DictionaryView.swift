@@ -2,47 +2,48 @@ import SwiftUI
 
 struct DictionaryView: View {
     
-    @State var isSelectedCard: Bool = false
-    @State var selectedRunner: Runner? = nil
+    @State var isSelectedCard: Bool = false // 모달을 보여줄지 말지
+    @State var selectedLearner: Learner? = nil // 어떤 카드를 보여줄지
+    @Binding var learners: [Learner] // let을 사용하면 읽기만 가능, 변경 불가
     
-    let columns = Array(repeating: GridItem(.flexible(), spacing: 7), count: 5)
-    let runners = mockRunners
+    let columns = Array(repeating: GridItem(.flexible(), spacing: 7), count: 5) // 반복문으로 한줄로 줄임
+    
+    private var collectedCount: Int { // 수집한 러너 수
+        learners.filter { $0.imageName != nil }.count // 호출될 때마다 계산됨
+    }
     
     var body: some View {
         
         ZStack {
-            
             VStack(spacing: 0) {
                 
                 HStack(spacing: 0) {
                     Text("Dict")
                         .font(.system(size: 28, weight: .bold, design: .default))
-                        .fontWeight(.bold)
                         .padding(.top, 13)
                         .padding(.bottom, 32)
                         .padding(.leading, 30)
                         .padding(.trailing, 14)
                     
-                    Text("8/180")
-                        .font(.system(size: 16, weight: .regular, design: .default))
-                        .fontWeight(.bold)
+                    Text("\(collectedCount)/180")
+                        .font(.system(size: 16, weight: .bold, design: .default))
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.top, 13)
                         .padding(.bottom, 32)
                 }
                 
                 ScrollView {
-                    LazyVGrid(columns: columns, spacing: 0) {
-                        ForEach(runners) { runner in
+                    LazyVGrid(columns: columns, spacing: 0) { // 메모리 효율적으로 관리
+                        ForEach(learners) { learner in
                             ZStack {
                                 RoundedRectangle(cornerRadius: 3)
                                     .fill(Color.gray.opacity(0.3))
-                                    .aspectRatio(3/4, contentMode: .fit)
+                                    .aspectRatio(3/4, contentMode: .fit) // 카드 가로 세로 비율 고정
                                 
-                                if let imageName = runner.imageName {
+                                if let imageName = learner.imageName {
                                     Image(imageName)
                                         .resizable()
-                                        .aspectRatio(3/4, contentMode: .fit)
+                                        .aspectRatio(3/4, contentMode: .fit) // 카드 가로 세로 비율 고정
                                         .clipShape(RoundedRectangle(cornerRadius: 3))
                                 } else {
                                     Image(systemName: "apple.logo")
@@ -53,8 +54,8 @@ struct DictionaryView: View {
                             }
                             .padding(.bottom, 7)
                             .onTapGesture {
-                                withAnimation(.easeInOut(duration: 0.2)) {
-                                    selectedRunner = runner
+                                withAnimation(.easeInOut(duration: 0.2)) { // 처음과 끝은 느리게, 중간은 빠르게
+                                    selectedLearner = learner
                                     isSelectedCard = true
                                 }
                             }
@@ -71,21 +72,14 @@ struct DictionaryView: View {
                     .ignoresSafeArea()
                 
                 // 카드뷰
-                if let runner = selectedRunner {
-                    Color.black.opacity(isSelectedCard ? 0.5 : 0)
-                        .ignoresSafeArea()
-                    
-                    CardView(runner: runner, onClose: {
-                        selectedRunner = nil
-                        isSelectedCard = false
+                if let learner = selectedLearner {
+                    CardView(learner: learner, onClose: {
+                        selectedLearner = nil // 선택 초기화
+                        isSelectedCard = false // 모달 닫힘
                     })
                 }
             }
         }
         .toolbar(isSelectedCard ? .hidden : .visible, for: .tabBar) // 모달 화면에서 tabBar 안보이게
     }
-}
-
-#Preview {
-    DictionaryView()
 }

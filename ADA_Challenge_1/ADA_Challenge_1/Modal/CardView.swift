@@ -2,23 +2,22 @@ import SwiftUI
 
 // 카드 앞면
 struct CardView: View {
-    let runner: Runner // DictionaryView에서 선택된 runner를 받아옴
+    let learner: Learner // DictionaryView에서 선택된 learner를 받아옴, 수정할 필요가 없기에 let으로 받아옴
     var onClose: () -> Void // x 버튼
-    @State var isFlipped: Bool = false // 앞면 뒷면 터치
-    @StateObject private var gyro = GyroscopeManager()  // 홀로그램 카드 효과
+    @State var isFlipped: Bool = false // false: 앞면, true: 뒷면
     
     var body: some View {
         
         VStack(spacing: 0) {
             if isFlipped {
-                CardBackView(runner: runner)  // 뒷면
+                CardBackView(learner: learner)  // 뒷면
                     .onTapGesture {
-                        isFlipped.toggle()
+                        isFlipped.toggle() // 탭할 때마다 false <-> true 반복
                     }
             } else {
                 // 교체
-                if let imageName = runner.imageName {
-                    HologramCardView(imageName: imageName)  // ← 교체!
+                if let imageName = learner.imageName {
+                    HologramCardView(imageName: imageName)
                         .padding(.bottom, 79)
                         .onTapGesture {
                             isFlipped.toggle()
@@ -40,7 +39,7 @@ struct CardView: View {
                 }
                 
             }
-            if runner.imageName != nil {
+            if learner.imageName != nil {
                 Text("터치해서 카드를 뒤집어봐!")
                     .font(.system(size: 23, weight: .bold, design: .default))
                     .foregroundStyle(Color(hex: "FFFFFF"))
@@ -57,12 +56,8 @@ struct CardView: View {
             } label: {
                 Image(systemName: "xmark.circle.fill")
                     .font(.system(size: 60))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color(hex: "D9D9D9"))
             }
         }
     }
 }
-
-//#Preview {
-//    CardView(runner: Runner(name: "ian", imageName: "ian", time: "오전", introduce: "안녕하세요 반갑습니다 :)"))
-//}

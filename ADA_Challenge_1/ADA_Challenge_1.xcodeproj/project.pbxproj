@@ -398,6 +398,9 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ADA-Challenge-1-Info.plist";
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "\"근처 기기와 카드를 교환하기 위해 사용합니다\"";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "\"근처 기기와 카드를 교환하기 위해 사용합니다\"";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -442,6 +445,9 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ADA-Challenge-1-Info.plist";
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "\"근처 기기와 카드를 교환하기 위해 사용합니다\"";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "\"근처 기기와 카드를 교환하기 위해 사용합니다\"";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

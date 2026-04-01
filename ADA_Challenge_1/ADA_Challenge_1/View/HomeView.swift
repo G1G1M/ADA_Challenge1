@@ -1,29 +1,52 @@
 import SwiftUI
 
 struct HomeView: View {
+    // 모달 화면 상태
+    @State private var isSelected: Bool = false
+    @Binding var learners: [Learner] // 부모 View에서 빌려옴
     
-    // 진행 현황 게이지
-    @State private var current = 8.0
-    @State private var minValue = 0.0
-    @State private var maxValue = 180.0
+    private var collectedCount: Int { // 수집한 러너 수
+        learners.filter { $0.imageName != nil }.count // 호출될 때마다 계산됨
+    }
+    
+    private var morningCount: Int { // 오전 분반 러너 수
+        learners.filter { $0.imageName != nil && $0.time == "오전" }.count // 호출될 때마다 계산됨
+    }
+    
+    private var afternoonCount: Int { // 오후 분반 러너 수
+        learners.filter { $0.imageName != nil && $0.time == "오후" }.count // 호출될 때마다 계산됨
+    }
+    
+    private func addLearner(_ learner: Learner) {
+        if let index = learners.firstIndex(where: { $0.imageName == nil }) {
+                learners[index] = learner
+            }
+            isSelected = false
+    }
+    
+    @AppStorage("nickname") var nickname: String = "닉네임"
+    @AppStorage("time") var time: String = "오전"
+    @AppStorage("introduce") var introduce: String = ""
     
     var body: some View {
         VStack(spacing: 0) {
             
-            Text("Ian") // 닉네임
+            Text(nickname) // 닉네임
                 .font(.system(size: 28, weight: .bold, design: .default))
-                .fontWeight(.bold)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, 13)
                 .padding(.bottom, 32)
             
-            Image("Stella")
+            Image(nickname)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 218, height: 290)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 .hologramEffect()
                 .padding(.bottom, 13)
+                .onTapGesture {
+                    isSelected.toggle()
+                }
             
             Text("카드를 눌러서\n러너들과 친해져봐!") // 카드 사용 설명 문구
                 .font(.system(size: 14, weight: .light, design: .default))
@@ -35,27 +58,27 @@ struct HomeView: View {
                 
                 Rectangle() // 진행도 카드
                     .frame(width: 330, height: 198)
-                    .cornerRadius(20)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
                 
                 VStack(spacing: 0) {
                     HStack {
-                        Gauge(value: current, in: minValue...maxValue) {} // 러너 수집 현황 게이지
+                        Gauge(value: Double(collectedCount), in: 0...180){} // 러너 수집 현황 게이지(범위)
                         // 인원에 따라 게이지 색상 달라지게 하기
-                        currentValueLabel: {
+                        currentValueLabel: { // 게이지 중앙에 표시할 뷰(trailing closure)
                             VStack {
                                 Text("전체")
                                     .multilineTextAlignment(.center)
                                     .font(.system(size: 7, weight: .light, design: .default))
                                     .foregroundStyle(.black)
                                 
-                                Text("\(Int(current))/\(Int(maxValue))")
+                                Text("\(collectedCount)/180")
                                     .multilineTextAlignment(.center)
                                     .font(.system(size: 10, weight: .light, design: .default))
                                     .foregroundStyle(.black)
                             }
                         }
-                        .gaugeStyle(.accessoryCircularCapacity)
-                        .scaleEffect(1.8)
+                        .gaugeStyle(.accessoryCircularCapacity) // 원형 게이지 스타일
+                        .scaleEffect(1.8) // 1.8배 확대
                         .frame(width: 113, height: 113)
                         .foregroundStyle(Color.white)
                         .tint(.red)
@@ -72,10 +95,9 @@ struct HomeView: View {
                                     Text("오전")
                                         .font(Font.system(size: 14, weight: .bold, design: .default))
                                         .foregroundStyle(.black)
-                                        .background(Capsule().fill(Color(hex: "00D4FF")))
                                 }
                                 
-                                Text("4/90")
+                                Text("\(morningCount)/90")
                                     .foregroundStyle(Color.black)
                             }
                             
@@ -88,10 +110,9 @@ struct HomeView: View {
                                     Text("오후")
                                         .font(Font.system(size: 14, weight: .bold, design: .default))
                                         .foregroundStyle(.black)
-                                        .background(Capsule().fill(Color(hex: "F6FF00")))
                                 }
                                 
-                                Text("4/90")
+                                Text("\(afternoonCount)/90")
                                     .foregroundStyle(Color.black)
                             }
                         }
@@ -106,6 +127,12 @@ struct HomeView: View {
             .foregroundStyle(Color(hex: "F3F3F3"))
         }
         .padding(.horizontal, 30)
+        .fullScreenCover(isPresented: $isSelected) {
+            CardSwapView(
+                onClose: { isSelected = false },
+                onSave: { learner in addLearner(learner)}
+            )
+        }
         
         Spacer()
     }

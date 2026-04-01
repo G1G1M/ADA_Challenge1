@@ -9,10 +9,18 @@ import SwiftUI
 
 @main
 struct ADA_Challenge_1App: App {
+    @State var isOnboarded: Bool = UserDefaults.standard.bool(forKey: "isOnboarded") // UserDefaults에서 isOnboarded 꺼내기
+    
     var body: some Scene {
         WindowGroup {
-            TabBarView()
-                .preferredColorScheme(.light) 
+            if isOnboarded {
+                TabBarView()
+                    .preferredColorScheme(.light)
+            } else {
+                OnboardingView(onComplete: {
+                    isOnboarded = true
+                })
+            }
         }
     }
 }

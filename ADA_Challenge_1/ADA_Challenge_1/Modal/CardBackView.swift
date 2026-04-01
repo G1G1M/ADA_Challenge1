@@ -2,7 +2,7 @@ import SwiftUI
 
 // 카드 뒷면
 struct CardBackView: View {
-    let runner: Runner
+    let learner: Learner
     
     var body: some View {
         ZStack {
@@ -11,7 +11,7 @@ struct CardBackView: View {
                 .frame(width: 300, height: 420)
             
             VStack(spacing: 0) {
-                if let imageName = runner.imageName {
+                if let imageName = learner.imageName {
                     Image(imageName)
                         .resizable()
                         .scaledToFill()
@@ -20,23 +20,23 @@ struct CardBackView: View {
                         .padding(.bottom, 15)
                 }
                 
-                Text(runner.name)
+                Text(learner.name)
                     .font(Font.system(size: 20, weight: .bold, design: .default))
                     .padding(.bottom, 5)
                 
                 ZStack {
                     Capsule()
-                        .fill(runner.time == "오전" ? Color(hex: "00D4FF") : Color(hex: "F6FF00")) 
+                        .fill(learner.time == "오전" ? Color(hex: "00D4FF") : Color(hex: "F6FF00"))
                         .frame(width: 43, height: 19)
                     
-                    Text(runner.time)
+                    Text(learner.time)
                         .font(Font.system(size: 12, weight: .bold, design: .default))
                         .foregroundStyle(.black)
-                        .background(Capsule().fill(runner.time == "오전" ? Color(hex: "00D4FF") : Color(hex: "F6FF00")))
+                        .background(Capsule().fill(learner.time == "오전" ? Color(hex: "00D4FF") : Color(hex: "F6FF00")))
                 }
                 .padding(.bottom, 21)
                 
-                Text(runner.introduce)
+                Text(learner.introduce)
                     .font(Font.system(size: 12, weight: .bold, design: .default))
                     .foregroundStyle(.black)
             }
@@ -47,5 +47,5 @@ struct CardBackView: View {
 }
 
 #Preview {
-    CardBackView(runner: Runner(name: "ian", imageName: "Ian", time: "오후", introduce: "안녕하세요 개발하는 ian 입니다 :)"))
+    CardBackView(learner: Learner(name: "ian", imageName: "Ian", time: "오후", introduce: "안녕하세요 개발하는 ian 입니다 :)"))
 }
