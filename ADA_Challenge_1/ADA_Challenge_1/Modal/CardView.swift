@@ -39,6 +39,7 @@ struct CardView: View {
                 }
                 
             }
+            
             if learner.imageName != nil {
                 Text("터치해서 카드를 뒤집어봐!")
                     .font(.system(size: 23, weight: .bold, design: .default))

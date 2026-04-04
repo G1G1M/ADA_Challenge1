@@ -1,8 +1,9 @@
 import MultipeerConnectivity // 근거리 기기 간의 통신을 가능하게 해줌(인터넷 연결X, 와이파이 & 블루투스 사용)
 import Combine // @Published 사용하기 위해 선언
 
+@MainActor // 모든 프로퍼티와 함수가 자동으로 메인 스레드에서 실행(DispatchQueue.main.async 사용 x)
 class MultipeerManager: NSObject, ObservableObject, MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate, MCSessionDelegate {
-    // NSOject: Delegate가 필요로 함
+    // NSObject: Delegate가 필요로 함
     @Published var isConnected: Bool = false // 5. 연결 상태 변수
     @Published var receivedMessage: String = "" // 11. 받은 텍스트 저장하는 변수
     @Published var receivedLearner: Learner? = nil // 12. 받은 러너 정보 저장하는 변수
@@ -50,13 +51,9 @@ class MultipeerManager: NSObject, ObservableObject, MCNearbyServiceAdvertiserDel
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) { // 8. 연결 상태가 바뀔 때 호출됨
         switch state {
         case .connected: // 연결됐을 때
-            DispatchQueue.main.async {
-                self.isConnected = true
-            }
+            self.isConnected = true // DispatchQueue.main.async 사용 x
         case .notConnected: // 연결되지 않았을 때
-            DispatchQueue.main.async {
-                self.isConnected = false
-            }
+            self.isConnected = false // DispatchQueue.main.async 사용 x
         default:
             break
         }
@@ -65,13 +62,9 @@ class MultipeerManager: NSObject, ObservableObject, MCNearbyServiceAdvertiserDel
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) { // String으로만 디코딩 시도 ->
         if let learner = try? JSONDecoder().decode(Learner.self, from: data) {
-            DispatchQueue.main.async {
-                self.receivedLearner = learner
-            }
+            self.receivedLearner = learner // DispatchQueue.main.async 사용 x
         } else if let message = String(data: data, encoding: .utf8) {
-            DispatchQueue.main.async {
-                self.receivedMessage = message
-            }
+            self.receivedMessage = message // DispatchQueue.main.async 사용 x
         }
     }
     
@@ -87,10 +80,12 @@ class MultipeerManager: NSObject, ObservableObject, MCNearbyServiceAdvertiserDel
         
     }
     
+    // 초대 받으면 바로 수락
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
-        invitationHandler(true, mySession)
+        invitationHandler(true, mySession) // true: 수락
     }
     
+    // 기기 발견하면 바로 초대
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) { // 8. 주변 기기 발견됐을 때 호출
         browser.invitePeer(peerID, to: mySession, withContext: nil, timeout: 10)
     }
