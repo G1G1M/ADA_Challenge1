@@ -9,77 +9,81 @@ struct DictionaryView: View {
     let columns = Array(repeating: GridItem(.flexible(), spacing: 7), count: 5) // 반복문으로 한줄로 줄임
     
     private var collectedCount: Int { // 수집한 러너 수
-        learners.filter { $0.imageName != nil }.count // 호출될 때마다 계산됨
+        learners.filter { $0.imagePath != nil }.count // 호출될 때마다 계산됨
     }
     
     var body: some View {
         
-        ZStack {
-            VStack(spacing: 0) {
-                
-                HStack(spacing: 0) {
-                    Text("Dict")
-                        .font(.system(size: 28, weight: .bold, design: .default))
-                        .padding(.top, 13)
-                        .padding(.bottom, 32)
-                        .padding(.leading, 30)
-                        .padding(.trailing, 14)
+        NavigationStack {
+            ZStack {
+                VStack(spacing: 0) {
                     
-                    Text("\(collectedCount)/180")
-                        .font(.system(size: 16, weight: .bold, design: .default))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.top, 13)
-                        .padding(.bottom, 32)
-                }
-                
-                ScrollView {
-                    LazyVGrid(columns: columns, spacing: 0) { // 메모리 효율적으로 관리
-                        ForEach(learners) { learner in
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 3)
-                                    .fill(Color.gray.opacity(0.3))
-                                    .aspectRatio(3/4, contentMode: .fit) // 카드 가로 세로 비율 고정
-                                
-                                if let imageName = learner.imageName {
-                                    Image(imageName)
-                                        .resizable()
+                    HStack(spacing: 0) {
+                        Text("Dict")
+                            .font(.system(size: 28, weight: .bold, design: .default))
+                            .padding(.top, 13)
+                            .padding(.bottom, 32)
+                            .padding(.leading, 30)
+                            .padding(.trailing, 14)
+                        
+                        Text("\(collectedCount)/180")
+                            .font(.system(size: 16, weight: .bold, design: .default))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.top, 13)
+                            .padding(.bottom, 32)
+                    }
+                    
+                    ScrollView {
+                        LazyVGrid(columns: columns, spacing: 0) { // 메모리 효율적으로 관리
+                            ForEach(learners) { learner in
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 3)
+                                        .fill(Color.gray.opacity(0.3))
                                         .aspectRatio(3/4, contentMode: .fit) // 카드 가로 세로 비율 고정
-                                        .clipShape(RoundedRectangle(cornerRadius: 3))
-                                } else {
-                                    Image(systemName: "apple.logo")
-                                        .resizable()
-                                        .frame(width: 30, height: 30)
-                                        .foregroundStyle(.gray)
+                                    
+                                    if let imageName = learner.imagePath {
+                                        if let uiImage = UIImage(contentsOfFile: imageName) {
+                                            Image(uiImage: uiImage)
+                                                .resizable()
+                                                .aspectRatio(3/4, contentMode: .fit) // 카드 가로 세로 비율 고정
+                                                .clipShape(RoundedRectangle(cornerRadius: 3))
+                                        }
+                                    } else {
+                                        Image(systemName: "apple.logo")
+                                            .resizable()
+                                            .frame(width: 30, height: 30)
+                                            .foregroundStyle(.gray)
+                                    }
                                 }
-                            }
-                            .padding(.bottom, 7)
-                            .onTapGesture {
-                                withAnimation(.easeInOut(duration: 0.2)) { // 처음과 끝은 느리게, 중간은 빠르게
-                                    selectedLearner = learner
-                                    isSelectedCard = true
+                                .padding(.bottom, 7)
+                                .onTapGesture {
+                                    withAnimation(.easeInOut(duration: 0.2)) { // 처음과 끝은 느리게, 중간은 빠르게
+                                        selectedLearner = learner
+                                        isSelectedCard = true
+                                    }
                                 }
                             }
                         }
+                        .padding(.horizontal, 20)
                     }
-                    .padding(.horizontal, 20)
                 }
-            }
-            
-            // 카드 선택됐을 때
-            if isSelectedCard {
-                // 배경 blur
-                Color.black.opacity(0.5)
-                    .ignoresSafeArea()
                 
-                // 카드뷰
-                if let learner = selectedLearner {
-                    CardView(learner: learner, onClose: {
-                        selectedLearner = nil // 선택 초기화
-                        isSelectedCard = false // 모달 닫힘
-                    })
+                // 카드 선택됐을 때
+                if isSelectedCard {
+                    // 배경 blur
+                    Color.black.opacity(0.5)
+                        .ignoresSafeArea()
+                    
+                    // 카드뷰
+                    if let learner = selectedLearner {
+                        CardView(learner: learner, onClose: {
+                            selectedLearner = nil // 선택 초기화
+                            isSelectedCard = false // 모달 닫힘
+                        })
+                    }
                 }
             }
+            .toolbar(isSelectedCard ? .hidden : .visible, for: .tabBar) // 모달 화면에서 tabBar 안보이게
         }
-        .toolbar(isSelectedCard ? .hidden : .visible, for: .tabBar) // 모달 화면에서 tabBar 안보이게
     }
 }

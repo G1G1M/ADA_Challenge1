@@ -6,19 +6,19 @@ struct HomeView: View {
     @Binding var learners: [Learner] // 부모 View에서 빌려옴
     
     private var collectedCount: Int { // 수집한 러너 수
-        learners.filter { $0.imageName != nil }.count // 호출될 때마다 계산됨
+        learners.filter { $0.imagePath != nil }.count // 호출될 때마다 계산됨
     }
     
     private var morningCount: Int { // 오전 분반 러너 수
-        learners.filter { $0.imageName != nil && $0.time == "오전" }.count // 호출될 때마다 계산됨
+        learners.filter { $0.imagePath != nil && $0.time == "오전" }.count // 호출될 때마다 계산됨
     }
     
     private var afternoonCount: Int { // 오후 분반 러너 수
-        learners.filter { $0.imageName != nil && $0.time == "오후" }.count // 호출될 때마다 계산됨
+        learners.filter { $0.imagePath != nil && $0.time == "오후" }.count // 호출될 때마다 계산됨
     }
     
     private func addLearner(_ learner: Learner) {
-        if let index = learners.firstIndex(where: { $0.imageName == nil }) {
+        if let index = learners.firstIndex(where: { $0.imagePath == nil }) {
                 learners[index] = learner
             }
             isSelected = false
@@ -27,6 +27,7 @@ struct HomeView: View {
     @AppStorage("nickname") var nickname: String = "닉네임"
     @AppStorage("time") var time: String = "오전"
     @AppStorage("introduce") var introduce: String = ""
+    @AppStorage("imagePath") var imagePath: String = ""
     
     var body: some View {
         VStack(spacing: 0) {
@@ -37,16 +38,23 @@ struct HomeView: View {
                 .padding(.top, 13)
                 .padding(.bottom, 32)
             
-            Image(nickname)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 218, height: 290)
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-                .hologramEffect()
-                .padding(.bottom, 13)
-                .onTapGesture {
-                    isSelected.toggle()
-                }
+            if let uiImage = UIImage(contentsOfFile: imagePath) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 218, height: 290)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .hologramEffect()
+                    .padding(.bottom, 13)
+                    .onTapGesture {
+                        isSelected.toggle()
+                    }
+            } else {
+                Image(systemName: "apple.logo")
+                    .resizable()
+                    .frame(width: 30, height: 30)
+                    .foregroundStyle(.gray)
+            }
             
             Text("카드를 눌러서\n러너들과 친해져봐!") // 카드 사용 설명 문구
                 .font(.system(size: 14, weight: .light, design: .default))

@@ -11,13 +11,15 @@ struct CardBackView: View {
                 .frame(width: 300, height: 420)
             
             VStack(spacing: 0) {
-                if let imageName = learner.imageName {
-                    Image(imageName)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 134, height: 134)
-                        .clipShape(Circle())
-                        .padding(.bottom, 15)
+                if let imagePath = learner.imagePath {
+                    if let uiImage = UIImage(contentsOfFile: imagePath) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 134, height: 134)
+                            .clipShape(Circle())
+                            .padding(.bottom, 15)
+                    }
                 }
                 
                 Text(learner.name)
@@ -47,5 +49,5 @@ struct CardBackView: View {
 }
 
 #Preview {
-    CardBackView(learner: Learner(name: "ian", imageName: "Ian", time: "오후", introduce: "안녕하세요 개발하는 ian 입니다 :)"))
+    CardBackView(learner: Learner(name: "ian", imagePath: "Ian", time: "오후", introduce: "안녕하세요 개발하는 ian 입니다 :)"))
 }
