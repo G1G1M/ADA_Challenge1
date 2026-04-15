@@ -31,7 +31,7 @@ struct CardView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 20))
                         
                         Image(systemName: "apple.logo")
-                            .font(.system(size: 120))  // ← 이렇게 크기 조절
+                            .font(.system(size: 120))
                             .foregroundStyle(Color(hex: "7C7C7C"))
                     }
                     .hologramEffect()
