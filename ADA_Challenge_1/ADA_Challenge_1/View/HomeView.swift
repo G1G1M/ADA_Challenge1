@@ -39,12 +39,15 @@ struct HomeView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            
-            Text(profile?.nickname ?? "닉네임") // 닉네임
+            // 닉네임
+            Text(profile?.nickname ?? "닉네임")
                 .font(.system(size: 28, weight: .bold, design: .default))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, 13)
                 .padding(.bottom, 32)
+            
+            // 마이프로필 버튼(누르면 마이프로필뷰로 이동)
+            
             
             if let imageData = profile?.imageData,
                let uiImage = UIImage(data: imageData) {
