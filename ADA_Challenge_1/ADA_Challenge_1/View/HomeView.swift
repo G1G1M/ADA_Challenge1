@@ -1,44 +1,53 @@
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {
+    @Environment(\.modelContext) private var modelContext
+    
     // 모달 화면 상태
     @State private var isSelected: Bool = false
-    @Binding var learners: [Learner] // 부모 View에서 빌려옴
+    
+    // SwiftData 쿼리 (부모 View에서 빌려오는 대신 직접 쿼리)
+    @Query(filter: #Predicate<MyProfile> { _ in true }) private var profiles: [MyProfile]
+    @Query(sort: \Learner.order) private var learners: [Learner]
+    
+    private var profile: MyProfile? { profiles.first }
     
     private var collectedCount: Int { // 수집한 러너 수
-        learners.filter { $0.imagePath != nil }.count // 호출될 때마다 계산됨
+        learners.filter { $0.imageData != nil }.count // 호출될 때마다 계산됨
     }
     
     private var morningCount: Int { // 오전 분반 러너 수
-        learners.filter { $0.imagePath != nil && $0.time == "오전" }.count // 호출될 때마다 계산됨
+        learners.filter { $0.imageData != nil && $0.time == "오전" }.count // 호출될 때마다 계산됨
     }
     
     private var afternoonCount: Int { // 오후 분반 러너 수
-        learners.filter { $0.imagePath != nil && $0.time == "오후" }.count // 호출될 때마다 계산됨
+        learners.filter { $0.imageData != nil && $0.time == "오후" }.count // 호출될 때마다 계산됨
     }
     
-    private func addLearner(_ learner: Learner) {
-        if let index = learners.firstIndex(where: { $0.imagePath == nil }) {
-                learners[index] = learner
-            }
-            isSelected = false
+    // 받은 LearnerTransfer를 SwiftData에 저장
+    private func addLearner(_ transfer: LearnerTransfer) {
+        if let target = learners.first(where: { $0.imageData == nil }) {
+            target.name = transfer.name
+            target.imageData = transfer.imageData // 실제 이미지 Data 저장!
+            target.time = transfer.time
+            target.introduce = transfer.introduce
+            try? modelContext.save()
+        }
+        isSelected = false
     }
-    
-    @AppStorage("nickname") var nickname: String = "닉네임"
-    @AppStorage("time") var time: String = "오전"
-    @AppStorage("introduce") var introduce: String = ""
-    @AppStorage("imagePath") var imagePath: String = ""
     
     var body: some View {
         VStack(spacing: 0) {
             
-            Text(nickname) // 닉네임
+            Text(profile?.nickname ?? "닉네임") // 닉네임
                 .font(.system(size: 28, weight: .bold, design: .default))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, 13)
                 .padding(.bottom, 32)
             
-            if let uiImage = UIImage(contentsOfFile: imagePath) {
+            if let imageData = profile?.imageData,
+               let uiImage = UIImage(data: imageData) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -138,7 +147,7 @@ struct HomeView: View {
         .fullScreenCover(isPresented: $isSelected) {
             CardSwapView(
                 onClose: { isSelected = false },
-                onSave: { learner in addLearner(learner)}
+                onSave: { transfer in addLearner(transfer) }
             )
         }
         

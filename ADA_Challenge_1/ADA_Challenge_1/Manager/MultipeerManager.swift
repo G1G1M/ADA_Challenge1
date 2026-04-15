@@ -6,7 +6,7 @@ class MultipeerManager: NSObject, ObservableObject, MCNearbyServiceAdvertiserDel
     // NSObject: Delegate가 필요로 함
     @Published var isConnected: Bool = false // 5. 연결 상태 변수
     @Published var receivedMessage: String = "" // 11. 받은 텍스트 저장하는 변수
-    @Published var receivedLearner: Learner? = nil // 12. 받은 러너 정보 저장하는 변수
+    @Published var receivedLearner: LearnerTransfer? = nil // 12. 받은 러너 정보 저장하는 변수 (LearnerTransfer로 변경)
     
     var myPeerID: MCPeerID // 1. 기기의 이름표
     var mySession: MCSession // 2. 기기들이 모여서 대화하는 채널 -> 같은 채널에 있는 기기끼리만 통신 가능
@@ -34,7 +34,7 @@ class MultipeerManager: NSObject, ObservableObject, MCNearbyServiceAdvertiserDel
         }
     }
     
-    func sendLearner(_ learner: Learner) { // 11. 러너 정보 보내는 함수
+    func sendLearner(_ learner: LearnerTransfer) { // 11. 러너 정보 보내는 함수 (LearnerTransfer로 변경)
         if let data = try? JSONEncoder().encode(learner) {
             try? mySession.send(data, toPeers: mySession.connectedPeers, with: .reliable)
         }
@@ -60,8 +60,8 @@ class MultipeerManager: NSObject, ObservableObject, MCNearbyServiceAdvertiserDel
         
     }
     
-    func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) { // String으로만 디코딩 시도 ->
-        if let learner = try? JSONDecoder().decode(Learner.self, from: data) {
+    func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) { // LearnerTransfer로 디코딩 시도 ->
+        if let learner = try? JSONDecoder().decode(LearnerTransfer.self, from: data) {
             self.receivedLearner = learner // DispatchQueue.main.async 사용 x
         } else if let message = String(data: data, encoding: .utf8) {
             self.receivedMessage = message // DispatchQueue.main.async 사용 x
@@ -93,4 +93,3 @@ class MultipeerManager: NSObject, ObservableObject, MCNearbyServiceAdvertiserDel
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) { // 8. 발견했던 기기가 사라졌을 때
     }
 }
-

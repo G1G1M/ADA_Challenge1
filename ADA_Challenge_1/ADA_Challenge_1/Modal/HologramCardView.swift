@@ -62,7 +62,7 @@ class GyroscopeManager: ObservableObject {
 
 struct HologramCardView: View {
     
-    let imagePath: String
+    let imageData: Data? // imagePath 대신 imageData 사용
     var width: CGFloat = 300
     var height: CGFloat = 420
     
@@ -121,7 +121,7 @@ struct HologramCardView: View {
     // MARK: Card Background ─────────────────────────────────────────────
     @ViewBuilder // 여러 다른 View 타입을 반환할 수 있게 해주는 키워드
     private var cardBackground: some View {
-        if let uiImage = UIImage(contentsOfFile: imagePath) {
+        if let imageData, let uiImage = UIImage(data: imageData) { // Data에서 UIImage 생성
             Image(uiImage: uiImage)
                 .resizable()
                 .aspectRatio(contentMode: .fill)

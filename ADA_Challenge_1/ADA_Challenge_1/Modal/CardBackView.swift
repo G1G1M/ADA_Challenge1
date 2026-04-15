@@ -11,8 +11,8 @@ struct CardBackView: View {
                 .frame(width: 300, height: 420)
             
             VStack(spacing: 0) {
-                if let imagePath = learner.imagePath {
-                    if let uiImage = UIImage(contentsOfFile: imagePath) {
+                if let imageData = learner.imageData {
+                    if let uiImage = UIImage(data: imageData) {
                         Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFill()
@@ -46,8 +46,4 @@ struct CardBackView: View {
         .hologramEffect()
         .padding(.bottom, 79)
     }
-}
-
-#Preview {
-    CardBackView(learner: Learner(name: "ian", imagePath: "Ian", time: "오후", introduce: "안녕하세요 개발하는 ian 입니다 :)"))
 }

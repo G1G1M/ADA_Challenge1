@@ -1,7 +1,11 @@
 import SwiftUI
+import SwiftData
 
 // 카드 앞면
 struct CardSwapView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query(filter: #Predicate<MyProfile> { _ in true }) private var profiles: [MyProfile]
+    
     @State private var cardLocation: CGSize = .zero // 카드의 현재 위치 zero = (0,0)
     @State private var cardChange: Bool = false // false = 본인 카드, true = 다른 사람 카드
     @State private var cardRotation: Double = 0 // 카드 회전 초기위치
@@ -10,8 +14,7 @@ struct CardSwapView: View {
     
     @StateObject var manager = MultipeerManager() // ObservableObject를 view에서 사용할 때 씀
     
-    @AppStorage("nickname") var nickname: String = "" // UserDefaults의 값을 바로 가져옴
-    @AppStorage("imagePath") var imagePath: String = "" // UserDefaults의 값을 바로 가져옴
+    private var profile: MyProfile? { profiles.first }
     
     // 회전 함수
     func startSpinning() {
@@ -21,84 +24,57 @@ struct CardSwapView: View {
     }
     
     @ViewBuilder
-    private var cardImage: some View {
-        if cardChange, let path = manager.receivedLearner?.imagePath,
-               let uiImage = UIImage(contentsOfFile: path) {
-                Image(uiImage: uiImage)
+    private func cardContent(imageData: Data?) -> some View {
+        if let imageData, let uiImage = UIImage(data: imageData) {
+            Image(uiImage: uiImage)
                 .resizable()
                 .frame(width: 300, height: 420)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 .hologramEffect()
                 .rotation3DEffect(.degrees(cardRotation), axis: (x: 0, y: 1, z: 0))
                 .padding(.bottom, 79)
-                .offset(cardLocation) // cardLocation이 바뀌면 카드 위치가 바뀜
-                .gesture(
-                    DragGesture()
-                        .onChanged { value in
-                            cardLocation = value.translation // 드래그 중
-                        }
-                        .onEnded { value in                  // 손 땠을 때
-                            withAnimation {
-                                cardLocation.height = -1000 // 1. 위로 날아감
-                            }
-                            // DispatchQueue: 작업을 어느 스레드에서 언제 실행할 지 관리하는 것, main 스레드라서 .main
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // async: 비동기 실행, after: 특정 시간 이후에 실행
-                                if manager.receivedLearner != nil {
-                                    cardChange = true // 2. 다른 카드로 교체
-                                }
-                                cardLocation.height = -1000 // 3. 위에서 대기, zero로 설정하면 중간에 뿅하고 나타나는 효과가 되어버리기 때문.
-                                withAnimation {
-                                    cardLocation = .zero // 4. 원래 위치로 내려옴
-                                }
-                            }
-                        }
-                )
-                .onAppear {
-                    startSpinning()
-                }
-
-            } else if let uiImage = UIImage(contentsOfFile: imagePath) {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .frame(width: 300, height: 420)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                    .hologramEffect()
-                    .rotation3DEffect(.degrees(cardRotation), axis: (x: 0, y: 1, z: 0))
-                    .padding(.bottom, 79)
-                    .offset(cardLocation) // cardLocation이 바뀌면 카드 위치가 바뀜
-                    .gesture(
-                        DragGesture()
-                            .onChanged { value in
-                                cardLocation = value.translation // 드래그 중
-                            }
-                            .onEnded { value in                  // 손 땠을 때
-                                withAnimation {
-                                    cardLocation.height = -1000 // 1. 위로 날아감
-                                }
-                                // DispatchQueue: 작업을 어느 스레드에서 언제 실행할 지 관리하는 것, main 스레드라서 .main
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // async: 비동기 실행, after: 특정 시간 이후에 실행
-                                    if manager.receivedLearner != nil {
-                                        cardChange = true // 2. 다른 카드로 교체
-                                    }
-                                    cardLocation.height = -1000 // 3. 위에서 대기, zero로 설정하면 중간에 뿅하고 나타나는 효과가 되어버리기 때문.
-                                    withAnimation {
-                                        cardLocation = .zero // 4. 원래 위치로 내려옴
-                                    }
-                                }
-                            }
-                    )
-                    .onAppear {
-                        startSpinning()
+        } else {
+            Color.gray  // 이미지 없을 때
+        }
+    }
+    
+    @ViewBuilder
+    private var cardImage: some View {
+        let displayData = cardChange
+            ? manager.receivedLearner?.imageData
+            : profile?.imageData
+        
+        cardContent(imageData: displayData)
+            .offset(cardLocation) // cardLocation이 바뀌면 카드 위치가 바뀜
+            .gesture(
+                DragGesture()
+                    .onChanged { value in
+                        cardLocation = value.translation // 드래그 중
                     }
-
-            } else {
-                Color.gray  // 이미지 없을 때
+                    .onEnded { value in                  // 손 땠을 때
+                        withAnimation {
+                            cardLocation.height = -1000 // 1. 위로 날아감
+                        }
+                        // DispatchQueue: 작업을 어느 스레드에서 언제 실행할 지 관리하는 것, main 스레드라서 .main
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // async: 비동기 실행, after: 특정 시간 이후에 실행
+                            if manager.receivedLearner != nil {
+                                cardChange = true // 2. 다른 카드로 교체
+                            }
+                            cardLocation.height = -1000 // 3. 위에서 대기, zero로 설정하면 중간에 뿅하고 나타나는 효과가 되어버리기 때문.
+                            withAnimation {
+                                cardLocation = .zero // 4. 원래 위치로 내려옴
+                            }
+                        }
+                    }
+            )
+            .onAppear {
+                startSpinning()
             }
     }
     
     
     var onClose: () -> Void // x 버튼
-    var onSave: (Learner) -> Void // check 버튼, learner 받아서 저장
+    var onSave: (LearnerTransfer) -> Void // check 버튼, learner 받아서 저장 (LearnerTransfer로 변경)
     
     var body: some View {
         VStack(spacing: 0) {
@@ -115,7 +91,7 @@ struct CardSwapView: View {
             
             Button {
                 if cardChange, let learner = manager.receivedLearner { // , 를 쓰면 조건 확인이랑 옵셔널 꺼내기를 한 줄에 할 수 있어서 더 안전하고 깔끔
-                    onSave(learner)  // 받은 Learner 넘겨줌
+                    onSave(learner)  // 받은 LearnerTransfer 넘겨줌
                 } else {
                     onClose()
                 }
@@ -140,18 +116,15 @@ struct CardSwapView: View {
                 let generator = UINotificationFeedbackGenerator()
                 generator.notificationOccurred(.success)
                 
-                let myNickname = UserDefaults.standard.string(forKey: "nickname") ?? ""
-                let myTime = UserDefaults.standard.string(forKey: "time") ?? "오전"
-                let myIntroduce = UserDefaults.standard.string(forKey: "introduce") ?? ""
-                let myImagePath = UserDefaults.standard.string(forKey: "imagePath") ?? ""
-                
-                let myLearner = Learner(
-                    name: myNickname,
-                    imagePath: myImagePath,
-                    time: myTime,
-                    introduce: myIntroduce
+                // SwiftData에서 내 프로필을 읽어서 이미지 Data 포함해 전송
+                guard let profile else { return }
+                let transfer = LearnerTransfer(
+                    name: profile.nickname,
+                    imageData: profile.imageData, // 실제 이미지 Data 전송!
+                    time: profile.time,
+                    introduce: profile.introduce
                 )
-                manager.sendLearner(myLearner)
+                manager.sendLearner(transfer)
             }
         }
     }

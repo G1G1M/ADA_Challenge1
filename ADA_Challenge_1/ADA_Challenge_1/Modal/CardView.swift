@@ -16,8 +16,8 @@ struct CardView: View {
                     }
             } else {
                 // 교체
-                if let imageName = learner.imagePath {
-                    HologramCardView(imagePath: imageName)
+                if learner.imageData != nil {
+                    HologramCardView(imageData: learner.imageData)
                         .padding(.bottom, 79)
                         .onTapGesture {
                             isFlipped.toggle()
@@ -34,13 +34,13 @@ struct CardView: View {
                             .font(.system(size: 120))  // ← 이렇게 크기 조절
                             .foregroundStyle(Color(hex: "7C7C7C"))
                     }
-                    .hologramEffect() 
+                    .hologramEffect()
                     .padding(.bottom, 79)
                 }
                 
             }
             
-            if learner.imagePath != nil {
+            if learner.imageData != nil {
                 Text("터치해서 카드를 뒤집어봐!")
                     .font(.system(size: 23, weight: .bold, design: .default))
                     .foregroundStyle(Color(hex: "FFFFFF"))

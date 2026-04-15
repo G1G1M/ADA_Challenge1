@@ -1,11 +1,5 @@
-//
-//  ADA_Challenge_1App.swift
-//  ADA_Challenge_1
-//
-//  Created by 김지원 on 3/27/26.
-//
-
 import SwiftUI
+import SwiftData
 
 @main
 struct ADA_Challenge_1App: App {
@@ -22,5 +16,6 @@ struct ADA_Challenge_1App: App {
                 })
             }
         }
+        .modelContainer(for: [MyProfile.self, Learner.self]) // SwiftData 데이터베이스 생성 + 하위 모든 View에 modelContext 주입
     }
 }

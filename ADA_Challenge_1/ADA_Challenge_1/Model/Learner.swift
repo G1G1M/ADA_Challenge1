@@ -1,26 +1,35 @@
 import Foundation
+import SwiftData
 
-struct Learner: Identifiable, Codable, Equatable { // Codable: 기기끼리 데이터를 주고받을 때, Swift 구조체를 그대로 전송할 수 없기 때문, Equatable: 이전 값과 새로운 값을 비교하기 위해 사용
+@Model
+class Learner { // Codable 역할은 LearnerTransfer가 담당, Equatable은 @Model이 자동 제공
     var id = UUID() // 고정된 값이 아닌 디코딩할 때 값을 넣기 위해 var로 변경
-    let name: String
-    let imagePath: String? // nil이면 애플 로고
-    let time: String
-    let introduce: String
+    var name: String
+    @Attribute(.externalStorage) var imageData: Data? // imagePath 대신 imageData 사용
+    var time: String
+    var introduce: String
+    var order: Int // 정렬 순서 유지용
+    
+    init(name: String, imageData: Data? = nil, time: String, introduce: String, order: Int = 0) {
+        self.name = name
+        self.imageData = imageData
+        self.time = time
+        self.introduce = introduce
+        self.order = order
+    }
 }
 
 let imageNames = ["Jiwoo", "Carmen", "Yuha", "Stella",
                   "Juun", "Ana", "Ian", "Yeon"]
 
-let mockLearners = (0..<180).map { index in // 서버 없이 사용할 임시 데이터, map: 각 요소를 변환해서 새 배열로 반환하는 함수
-    let name = index < 8 ? imageNames[index % 8] : "Learner \(index)"
-    let imagePath: String? = nil
-    let time = index % 2 == 0 ? "오전" : "오후"
-    let introduce = "안녕하세요 \(name) 입니다 :)"
-    
-    return Learner(
-        name: name,
-        imagePath: imagePath,
-        time: time,
-        introduce: introduce
-    )
+// 최초 실행 시 180명 빈 러너 생성 (서버 없이 사용할 임시 데이터)
+func createDefaultLearners(context: ModelContext) {
+    for index in 0..<180 { // map 대신 for문으로 SwiftData에 insert
+        let name = index < 8 ? imageNames[index % 8] : "Learner \(index)"
+        let time = index % 2 == 0 ? "오전" : "오후"
+        let introduce = "안녕하세요 \(name) 입니다 :)"
+        let learner = Learner(name: name, time: time, introduce: introduce, order: index)
+        context.insert(learner)
+    }
+    try? context.save()
 }

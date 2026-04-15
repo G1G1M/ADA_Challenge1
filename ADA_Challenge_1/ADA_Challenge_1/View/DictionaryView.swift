@@ -1,15 +1,16 @@
 import SwiftUI
+import SwiftData
 
 struct DictionaryView: View {
     
     @State var isSelectedCard: Bool = false // 모달을 보여줄지 말지
-    @State var selectedLearner: Learner? = nil // 어떤 카드를 보여줄지
-    @Binding var learners: [Learner] // let을 사용하면 읽기만 가능, 변경 불가
+    @State var selectedLearner: Learner? = nil // 어떤 카드를 보여줄지 (LearnerModel로 변경)
+    @Query(sort: \Learner.order) private var learners: [Learner] // @Binding 대신 @Query로 SwiftData에서 직접 읽어옴
     
     let columns = Array(repeating: GridItem(.flexible(), spacing: 7), count: 5) // 반복문으로 한줄로 줄임
     
     private var collectedCount: Int { // 수집한 러너 수
-        learners.filter { $0.imagePath != nil }.count // 호출될 때마다 계산됨
+        learners.filter { $0.imageData != nil }.count // 호출될 때마다 계산됨
     }
     
     var body: some View {
@@ -41,8 +42,8 @@ struct DictionaryView: View {
                                         .fill(Color.gray.opacity(0.3))
                                         .aspectRatio(3/4, contentMode: .fit) // 카드 가로 세로 비율 고정
                                     
-                                    if let imageName = learner.imagePath {
-                                        if let uiImage = UIImage(contentsOfFile: imageName) {
+                                    if let imageData = learner.imageData { // imagePath 대신 imageData 사용
+                                        if let uiImage = UIImage(data: imageData) { // Data에서 UIImage 생성
                                             Image(uiImage: uiImage)
                                                 .resizable()
                                                 .aspectRatio(3/4, contentMode: .fit) // 카드 가로 세로 비율 고정
