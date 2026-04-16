@@ -34,12 +34,14 @@ struct HomeView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // 닉네임
-            Text(profile?.nickname ?? "닉네임")
-                .font(.system(size: 28, weight: .bold, design: .default))
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.top, 99)
-                .padding(.bottom, 15)
+//            // 닉네임
+//            Text(profile?.nickname ?? "닉네임")
+//                .font(.system(size: 28, weight: .bold, design: .default))
+//                .frame(maxWidth: .infinity, alignment: .center)
+//                .padding(.top, 99)
+//                .padding(.bottom, 15)
+            
+            Spacer()
             
             // 마이프로필 버튼(누르면 마이프로필뷰로 이동)
             
@@ -70,6 +72,8 @@ struct HomeView: View {
                 .opacity(showText)
                 // 글자가 보였다 안보였다하는 효과
                 .onAppear{ withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) { showText = 0.0 }}
+            
+            Spacer()
         }
         .padding(.horizontal, 30)
         .fullScreenCover(isPresented: $isSelected) {
@@ -78,8 +82,6 @@ struct HomeView: View {
                 onSave: { transfer in addLearner(transfer) }
             )
         }
-        
-        Spacer()
     }
 }
 
