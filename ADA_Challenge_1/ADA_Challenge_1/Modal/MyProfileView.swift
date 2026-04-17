@@ -117,7 +117,7 @@ struct MyProfileView: View {
                     profile.introduce = introduce
                     profile.imageData = profileImageData
                     profile.time = session == .morning ? "오전" : "오후"
-                    try? modelContext.save()
+                    try? modelContext.save() // 써도 되고 안써도 됨
                 }
                 dismiss()
             } label: {
