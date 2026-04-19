@@ -34,16 +34,16 @@ struct CardBackView: View {
                     Text(learner.time)
                         .font(Font.system(size: 12, weight: .bold, design: .default))
                         .foregroundStyle(.black)
-                        .background(Capsule().fill(learner.time == "오전" ? Color(hex: "00D4FF") : Color(hex: "F6FF00")))
                 }
                 .padding(.bottom, 21)
                 
                 Text(learner.introduce)
                     .font(Font.system(size: 12, weight: .bold, design: .default))
                     .foregroundStyle(.black)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 20)
             }
         }
         .hologramEffect()
-        .padding(.bottom, 79)
     }
 }

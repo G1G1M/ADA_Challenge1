@@ -76,6 +76,7 @@ struct HomeView: View {
             Spacer()
         }
         .padding(.horizontal, 30)
+        .padding(.bottom, 50)
         .fullScreenCover(isPresented: $isSelected) {
             CardSwapView(
                 onClose: { isSelected = false },
