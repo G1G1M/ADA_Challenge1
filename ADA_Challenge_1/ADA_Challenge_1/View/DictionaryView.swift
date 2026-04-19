@@ -10,6 +10,8 @@ struct DictionaryView: View {
     @State private var showMyProfile: Bool = false // 마이프로필뷰 모달 표시 여부
     @Query private var profiles: [MyProfile]
     
+    @Binding var hideTabBar: Bool // 탭바 숨김 상태 바인딩
+    
     let columns = Array(repeating: GridItem(.flexible(), spacing: 7), count: 5) // 반복문으로 한줄로 줄임
     
     private var collectedCount: Int { // 수집한 러너 수
@@ -122,6 +124,7 @@ struct DictionaryView: View {
                                 withAnimation(.easeInOut(duration: 0.2)) {
                                     selectedLearner = learner
                                     isSelectedCard = true
+                                    hideTabBar = true
                                 }
                             }
                         }
@@ -140,11 +143,11 @@ struct DictionaryView: View {
                     CardView(learner: learner, onClose: {
                         selectedLearner = nil
                         isSelectedCard = false
+                        hideTabBar = false
                     })
                 }
             }
         }
-        .toolbar(isSelectedCard ? .hidden : .visible, for: .tabBar)
         .fullScreenCover(isPresented: $showMyProfile) {
             MyProfileView()
         }
@@ -152,6 +155,6 @@ struct DictionaryView: View {
 }
 
 #Preview {
-    DictionaryView()
+    DictionaryView(hideTabBar: .constant(false))
         .modelContainer(for: Learner.self, inMemory: true)
 }
