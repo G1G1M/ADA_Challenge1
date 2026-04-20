@@ -34,16 +34,8 @@ struct HomeView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-//            // 닉네임
-//            Text(profile?.nickname ?? "닉네임")
-//                .font(.system(size: 28, weight: .bold, design: .default))
-//                .frame(maxWidth: .infinity, alignment: .center)
-//                .padding(.top, 99)
-//                .padding(.bottom, 15)
             
             Spacer()
-            
-            // 마이프로필 버튼(누르면 마이프로필뷰로 이동)
             
             // 본인 카드 이미지
             if let imageData = profile?.imageData,
