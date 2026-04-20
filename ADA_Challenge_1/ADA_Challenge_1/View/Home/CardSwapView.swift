@@ -8,20 +8,11 @@ struct CardSwapView: View {
     
     @State private var cardLocation: CGSize = .zero // 카드의 현재 위치 zero = (0,0)
     @State private var cardChange: Bool = false // false = 본인 카드, true = 다른 사람 카드
-    @State private var cardRotation: Double = 0 // 카드 회전 초기위치
-    @State private var isSpinning: Bool = true // 카드 회전 여부
-    
-    
+    @State private var isRotating: Bool = false // 카드 회전 여부
+        
     @StateObject var manager = MultipeerManager() // ObservableObject를 view에서 사용할 때 씀
     
     private var profile: MyProfile? { profiles.first }
-    
-    // 회전 함수
-    func startSpinning() {
-        withAnimation(.linear(duration: 1.0).repeatForever(autoreverses: false)) {
-            cardRotation = 360
-        }
-    }
     
     @ViewBuilder
     private func cardContent(imageData: Data?) -> some View {
@@ -31,7 +22,8 @@ struct CardSwapView: View {
                 .frame(width: 300, height: 420)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 .hologramEffect()
-                .rotation3DEffect(.degrees(cardRotation), axis: (x: 0, y: 1, z: 0))
+                .rotation3DEffect(.degrees(isRotating ? 360 : 0), axis: (x: 0, y: 1, z: 0))
+                .animation(.linear(duration: 1.0).repeatForever(autoreverses: false), value: isRotating) // withAnimation 대신 .animation으로 간섭 방지
                 .padding(.bottom, 79)
         } else {
             Color.gray  // 이미지 없을 때
@@ -68,26 +60,37 @@ struct CardSwapView: View {
                     }
             )
             .onAppear {
-                startSpinning()
+                isRotating = true // 카드 회전 시작
             }
     }
-    
     
     var onClose: () -> Void // x 버튼
     var onSave: (LearnerTransfer) -> Void // check 버튼, learner 받아서 저장 (LearnerTransfer로 변경)
     
     var body: some View {
         VStack(spacing: 0) {
-            //            Text(manager.isConnected ? "연결됨" : "연결중 ..") // 연결 상태 표시 -> 카드 돌아가는 효과로 처리해보기
-            //                .font(.system(size: 16))
-            //                .foregroundStyle(manager.isConnected ? .green : .gray)
             
             cardImage
 
-            Text(!manager.isConnected ? "주변에 있는 러너들을 찾고 있어요!" : cardChange ? "아카데미 러너 \(manager.receivedLearner?.name ?? "")를 얻었다!" : "\(manager.receivedLearner?.name ?? "")를 발견했어!\n스와이프로 상대에게 카드를 전송해!")
-                .font(.system(size: 23, weight: .bold, design: .default))
-                .multilineTextAlignment(.center)
-                .padding(.bottom, 48)
+            if !manager.isConnected {
+                Text("주변에 있는 러너들을\n찾고 있어요!")
+                    .font(.system(size: 18, weight: .bold, design: .default))
+                    .foregroundStyle(Color.gray)
+                    .multilineTextAlignment(.center)
+                    .padding(.bottom, 48)
+            } else if cardChange {
+                Text("아카데미 러너 \(manager.receivedLearner?.name ?? "")를 얻었다!")
+                    .font(.system(size: 18, weight: .bold, design: .default))
+                    .foregroundStyle(Color.gray)
+                    .multilineTextAlignment(.center)
+                    .padding(.bottom, 48)
+            } else {
+                Text("\(manager.receivedLearner?.name ?? "")를 발견했어!\n스와이프로 상대에게 카드를 전송해!")
+                    .font(.system(size: 18, weight: .bold, design: .default))
+                    .foregroundStyle(Color.gray)
+                    .multilineTextAlignment(.center)
+                    .padding(.bottom, 48)
+            }
             
             Button {
                 if cardChange, let learner = manager.receivedLearner { // , 를 쓰면 조건 확인이랑 옵셔널 꺼내기를 한 줄에 할 수 있어서 더 안전하고 깔끔
@@ -96,21 +99,24 @@ struct CardSwapView: View {
                     onClose()
                 }
             } label: {
-                Image(systemName: cardChange ? "checkmark.circle.fill" : "xmark.circle.fill")
-                    .font(.system(size: 60))
-                    .foregroundStyle(Color(hex: "D9D9D9"))
+                Text(cardChange ? "저장하기" : "닫기")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 50)
+                    .padding(.vertical, 14)
+                    .background(cardChange ? Color.black : Color.gray.opacity(0.4))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
             }
+            .padding(.horizontal, 40)
         }
-        .onAppear(){ // onAppear: View가 화면에 나타날 때 딱 한 번 실행
+        .onAppear() { // onAppear: View가 화면에 나타날 때 딱 한 번 실행
             manager.startAdvertising() // 기기 광고 시작
             manager.startBrowsing() // 기기 탐색 시작
         }
         .onChange(of: manager.isConnected) { connected in
             if connected {
                 // 회전 멈춤
-                withAnimation(.spring(response: 0.4, dampingFraction: 0.5)) { // 통통튀는, 반응 속도, 튀는 정도
-                    cardRotation = 0
-                }
+                isRotating = false
                 
                 // 햅틱
                 let generator = UINotificationFeedbackGenerator()

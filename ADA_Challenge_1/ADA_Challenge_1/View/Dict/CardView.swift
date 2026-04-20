@@ -57,13 +57,18 @@ struct CardView: View {
                 .foregroundStyle(.white)
                 .padding(.bottom, 79)
             
-            Button { // x 버튼
+            Button { // 닫기 버튼
                 onClose()
             } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.system(size: 60))
-                    .foregroundStyle(Color(hex: "D9D9D9"))
+                Text("닫기")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 50)
+                    .padding(.vertical, 14)
+                    .background(Color.gray)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
             }
+            .padding(.horizontal, 40)
         }
     }
     

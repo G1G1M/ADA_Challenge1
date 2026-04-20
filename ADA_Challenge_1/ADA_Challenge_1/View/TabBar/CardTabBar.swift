@@ -10,7 +10,7 @@ struct CardTabBar: View {
             // 펼쳐진 상태의 버튼들
             Group {
                 // 홈
-                tabButton(title: "홈", icon: "house.fill", color: .red)
+                tabButton(title: "홈", icon: "house.fill", color: .white)
                     .offset(x: onSwitch ? -85 : 0, y: onSwitch ? -15 : 0)
                     .rotationEffect(.degrees(onSwitch ? -10 : 0))
                     .opacity(onSwitch ? 1 : 0)
@@ -18,7 +18,7 @@ struct CardTabBar: View {
                     .animation(.spring(response: 0.4, dampingFraction: 0.6).delay(0.05), value: onSwitch)
                 
                 // 설정
-                tabButton(title: "설정", icon: "gearshape.fill", color: .yellow)
+                tabButton(title: "설정", icon: "gearshape.fill", color: .white)
                     .offset(x: onSwitch ? 85 : 0, y: onSwitch ? -15 : 0)
                     .rotationEffect(.degrees(onSwitch ? 10 : 0))
                     .opacity(onSwitch ? 1 : 0)
@@ -26,7 +26,7 @@ struct CardTabBar: View {
                     .animation(.spring(response: 0.4, dampingFraction: 0.6).delay(0.1), value: onSwitch)
                 
                 // 도감
-                tabButton(title: "도감", icon: "book.fill", color: .blue)
+                tabButton(title: "도감", icon: "book.fill", color: .white)
                     .offset(x: 0, y: onSwitch ? -35 : 0)
                     .opacity(onSwitch ? 1 : 0)
                     .onTapGesture { selectTab("도감") }
