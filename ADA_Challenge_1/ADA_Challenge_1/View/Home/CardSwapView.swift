@@ -102,7 +102,7 @@ struct CardSwapView: View {
                 Text(cardChange ? "저장하기" : "닫기")
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(.white)
-                    .frame(width: 50)
+                    .frame(width: 65)
                     .padding(.vertical, 14)
                     .background(cardChange ? Color.black : Color.gray.opacity(0.4))
                     .clipShape(RoundedRectangle(cornerRadius: 12))
