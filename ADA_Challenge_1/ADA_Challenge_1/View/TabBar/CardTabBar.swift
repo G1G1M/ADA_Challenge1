@@ -80,7 +80,7 @@ struct CardTabBar: View {
                     .frame(width: 55, height: 55)
                     .shadow(color: .black.opacity(0.3), radius: 6, y: 4)
                 
-                Image(systemName: onSwitch ? "xmark" : "plus")
+                Image(systemName: onSwitch ? "xmark" : "line.3.horizontal")
                     .font(.system(size: 16, weight: .bold))
                     .foregroundColor(.white)
                     .rotationEffect(.degrees(onSwitch ? 90 : 0))

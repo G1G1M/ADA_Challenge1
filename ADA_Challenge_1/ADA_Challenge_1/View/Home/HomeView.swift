@@ -58,7 +58,7 @@ struct HomeView: View {
             }
             // 카드 사용 설명 문구
             Text("카드를 눌러서\n러너들과 친해져봐!")
-                .font(.system(size: 14, weight: .light, design: .default))
+                .font(.system(size: 20, weight: .light, design: .default))
                 .foregroundStyle(Color.gray)
                 .multilineTextAlignment(.center)
                 .opacity(showText)
