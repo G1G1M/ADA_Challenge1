@@ -9,13 +9,17 @@ class Learner { // Codable 역할은 LearnerTransfer가 담당, Equatable은 @Mo
     var time: String
     var introduce: String
     var order: Int // 정렬 순서 유지용
+    var latitude: Double? = nil  // 위도 (교환한 위치)
+    var longitude: Double? = nil // 경도 (교환한 위치)
     
-    init(name: String, imageData: Data? = nil, time: String, introduce: String, order: Int = 0) {
+    init(name: String, imageData: Data? = nil, time: String, introduce: String, order: Int = 0, latitude: Double? = nil, longitude: Double? = nil) {
         self.name = name
         self.imageData = imageData
         self.time = time
         self.introduce = introduce
         self.order = order
+        self.latitude = latitude
+        self.longitude = longitude
     }
 }
 

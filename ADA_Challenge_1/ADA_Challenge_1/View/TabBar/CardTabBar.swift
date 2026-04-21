@@ -33,12 +33,12 @@ struct CardTabBar: View {
                     .animation(.spring(response: 0.4, dampingFraction: 0.6).delay(0), value: onSwitch)
 
                 // 설정
-                tabButton(title: "설정", icon: "gearshape.fill", color: .white)
+                tabButton(title: "지도", icon: "map.fill", color: .white)
                     .offset(x: onSwitch ? 80 : 0, y: onSwitch ? -75 : 0)
                     .rotationEffect(.degrees(onSwitch ? 8 : 0))
                     .opacity(onSwitch ? 1 : 0)
                     .scaleEffect(onSwitch ? 1 : 0.5)
-                    .onTapGesture { selectTab("설정") }
+                    .onTapGesture { selectTab("지도") }
                     .animation(.spring(response: 0.4, dampingFraction: 0.6).delay(0.05), value: onSwitch)
             }
             

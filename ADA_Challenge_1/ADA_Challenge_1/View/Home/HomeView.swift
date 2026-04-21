@@ -32,6 +32,19 @@ struct HomeView: View {
         isSelected = false
     }
     
+    private func addLearner(_ transfer: LearnerTransfer, latitude: Double?, longitude: Double?) {
+        if let target = learners.first(where: { $0.imageData == nil }) {
+            target.name = transfer.name
+            target.imageData = transfer.imageData
+            target.time = transfer.time
+            target.introduce = transfer.introduce
+            target.latitude = latitude   // 위치 저장
+            target.longitude = longitude // 위치 저장
+            try? modelContext.save()
+        }
+        isSelected = false
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             
@@ -72,7 +85,9 @@ struct HomeView: View {
         .fullScreenCover(isPresented: $isSelected) {
             CardSwapView(
                 onClose: { isSelected = false },
-                onSave: { transfer in addLearner(transfer) }
+                onSave: { transfer, latitude, longitude in 
+                    addLearner(transfer, latitude: latitude, longitude: longitude)
+                }
             )
         }
     }

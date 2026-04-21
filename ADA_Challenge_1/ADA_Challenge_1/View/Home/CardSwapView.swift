@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import CoreLocation
 
 // 카드 앞면
 struct CardSwapView: View {
@@ -13,6 +14,7 @@ struct CardSwapView: View {
     @State private var hasConnectedOnce: Bool = false  // 한 번이라도 연결됐으면 true, 절대 false로 안 돌아감
     
     @StateObject var manager = MultipeerManager() // ObservableObject를 view에서 사용할 때 씀
+    @StateObject private var locationManager = LocationManager() // 위치 매니저 추가
     
     private var profile: MyProfile? { profiles.first }
     
@@ -91,7 +93,7 @@ struct CardSwapView: View {
     }
     
     var onClose: () -> Void // x 버튼
-    var onSave: (LearnerTransfer) -> Void // check 버튼, learner 받아서 저장
+    var onSave: (LearnerTransfer, Double?, Double?) -> Void // check 버튼, learner 받아서 저장
     
     var body: some View {
         VStack(spacing: 0) {
@@ -130,8 +132,12 @@ struct CardSwapView: View {
             }
             
             Button {
-                if cardChange, let learner = manager.receivedLearner { // , 를 쓰면 조건 확인이랑 옵셔널 꺼내기를 한 줄에 할 수 있어서 더 안전하고 깔끔
-                    onSave(learner)  // 받은 LearnerTransfer 넘겨줌
+                if cardChange, let learner = manager.receivedLearner {
+                    onSave(
+                        learner,
+                        locationManager.lastLocation?.coordinate.latitude,
+                        locationManager.lastLocation?.coordinate.longitude
+                    )
                 } else {
                     onClose()
                 }

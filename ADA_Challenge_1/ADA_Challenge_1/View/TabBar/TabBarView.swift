@@ -18,8 +18,8 @@ struct TabBarView: View {
                 DictionaryView(hideTabBar: $hideTabBar)
                     .opacity(currentTab == "도감" ? 1 : 0)
                 
-                SettingView()
-                    .opacity(currentTab == "설정" ? 1 : 0)
+                JidoView(hideTabBar: $hideTabBar)
+                    .opacity(currentTab == "지도" ? 1 : 0)
             }
             // 화면 전환 애니메이션을 빼거나 아주 짧게 주어 즉각적인 반응을 유도
             .animation(nil, value: currentTab)
@@ -40,7 +40,8 @@ struct TabBarView: View {
             }
         }
         .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            Task {
+                try? await Task.sleep(for: .seconds(2)) // 2초 후 스플래시 종료
                 withAnimation {
                     showSplash = false
                 }
