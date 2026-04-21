@@ -30,7 +30,7 @@ struct DictionaryView: View {
     
     private var filteredLearners: [Learner] {
         guard let filter = selectedFilter else { return learners } // nil이면 전체 반환
-        return learners.filter { $0.time == filter && $0.imageData != nil } // 선택된 필터 + 수집한 것만
+        return learners.filter { $0.time == filter } // imageData 조건 제거 → 미수집 카드도 포함
     }
     
     var body: some View {
@@ -112,7 +112,7 @@ struct DictionaryView: View {
                         let isSelected = (option == "전체" && selectedFilter == nil) ||
                                          (option != "전체" && selectedFilter == option)
                         Button {
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                            withAnimation(.easeInOut(duration: 0.2)) { 
                                 selectedFilter = option == "전체" ? nil : option
                             }
                         } label: {
@@ -157,10 +157,11 @@ struct DictionaryView: View {
                                         .aspectRatio(3/4, contentMode: .fit)
                                         .clipShape(RoundedRectangle(cornerRadius: 3))
                                 } else {
+                                    // 미수집 카드
                                     Image(systemName: "apple.logo")
                                         .resizable()
-                                        .frame(width: 30, height: 30)
-                                        .foregroundStyle(.gray)
+                                        .frame(width: 20, height: 25)
+                                        .foregroundStyle(.gray.opacity(0.5))
                                 }
                             }
                             .padding(.bottom, 7)
@@ -171,9 +172,10 @@ struct DictionaryView: View {
                                     hideTabBar = true
                                 }
                             }
-                        }
-                    }
+                        }                    }
                     .padding(.horizontal, 20)
+                    .id(selectedFilter) // 필터 바뀌면 그리드 전체를 새로 그림
+                        .transition(.opacity) // 위에서 올라오는 대신 페이드로 전환
                 }
             }
             .background(Color(hex: "FFFFFF").ignoresSafeArea())
