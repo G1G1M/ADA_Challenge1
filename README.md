@@ -31,6 +31,8 @@
 ## 2. HomeView
 > 사용자의 카드 & 상대방 카드 교환 페이지로 이동 가능
 
+<img src="./screenshots/home.png" width="240"/> <img src="./screenshots/home_tabbar.png" width="240"/>
+
 | 컴포넌트 | 설명 |
 |----------|------|
 | 이미지 | 사용자 프로필 이미지 표시 |
@@ -39,6 +41,8 @@
 
 ### 2-1. CardSwapView (Modal)
 > 상대방과 카드를 교환할 수 있는 페이지
+
+<img src="./screenshots/cardswap_searching.png" width="240"/>
 
 | 컴포넌트 | 설명 |
 |----------|------|
@@ -53,6 +57,8 @@
 ## 3. DictionaryView
 > 사용자 정보 확인 & 수집 현황 & 수집한 카드 목록 & 카드 상세 정보 확인
 
+<img src="./screenshots/dictionary.png" width="240"/>
+
 | 컴포넌트 | 설명 |
 |----------|------|
 | 텍스트 | "러너 도감" 타이틀 표시 |
@@ -64,12 +70,16 @@
 ### 3-1. MyProfileView (Modal)
 > 사용자 본인의 정보를 확인하고 수정할 수 있는 페이지
 
+<img src="./screenshots/myprofile.png" width="240"/>
+
 | 컴포넌트 | 설명 |
 |----------|------|
 | 컴포넌트 구성 | OnboardingView와 동일한 구성 |
 
 ### 3-2. CardView (Modal)
 > 카드 상세 정보를 볼 수 있는 페이지
+
+<img src="./screenshots/card_front.png" width="240"/> <img src="./screenshots/card_back.png" width="240"/>
 
 | 컴포넌트 | 설명 |
 |----------|------|
@@ -82,6 +92,8 @@
 
 ## 4. JidoView
 > 카드를 교환했던 위치를 확인할 수 있는 페이지
+
+<img src="./screenshots/jido.png" width="240"/> <img src="./screenshots/jido_list.png" width="240"/>
 
 | 컴포넌트 | 설명 |
 |----------|------|
