@@ -31,7 +31,7 @@
 ## 2. HomeView
 > 사용자의 카드 & 상대방 카드 교환 페이지로 이동 가능
 
-<img src="./screenshots/home.png" width="240"/> <img src="./screenshots/home_tabbar.png" width="240"/>
+<img src="https://github.com/user-attachments/assets/63bd1bdd-a9ad-4d4b-a4cd-6f4298e50301" width="240"/> <img src="https://github.com/user-attachments/assets/aa936007-4b5e-4292-a001-69eb9f462f84" width="240"/>
 
 | 컴포넌트 | 설명 |
 |----------|------|
@@ -42,7 +42,7 @@
 ### 2-1. CardSwapView (Modal)
 > 상대방과 카드를 교환할 수 있는 페이지
 
-<img src="./screenshots/cardswap_searching.png" width="240"/>
+<img src="https://github.com/user-attachments/assets/d2ce827d-4f46-4aaf-8537-7f0655102c55" width="240"/>
 
 | 컴포넌트 | 설명 |
 |----------|------|
@@ -57,7 +57,7 @@
 ## 3. DictionaryView
 > 사용자 정보 확인 & 수집 현황 & 수집한 카드 목록 & 카드 상세 정보 확인
 
-<img src="./screenshots/dictionary.png" width="240"/>
+<img src="https://github.com/user-attachments/assets/c3cfca43-3b8e-4ba1-bc34-8d33e02f5d60" width="240"/>
 
 | 컴포넌트 | 설명 |
 |----------|------|
@@ -70,7 +70,7 @@
 ### 3-1. MyProfileView (Modal)
 > 사용자 본인의 정보를 확인하고 수정할 수 있는 페이지
 
-<img src="./screenshots/myprofile.png" width="240"/>
+<img src="https://github.com/user-attachments/assets/a6596485-6f6a-4ca1-8e7a-0503dc4305f5" width="240"/>
 
 | 컴포넌트 | 설명 |
 |----------|------|
@@ -79,7 +79,7 @@
 ### 3-2. CardView (Modal)
 > 카드 상세 정보를 볼 수 있는 페이지
 
-<img src="./screenshots/card_front.png" width="240"/> <img src="./screenshots/card_back.png" width="240"/>
+<img src="https://github.com/user-attachments/assets/39cdeb6a-ffe2-4d10-88a0-8950be6e5944" width="240"/> <img src="https://github.com/user-attachments/assets/df616517-58c9-4725-8eba-c9f21f73138a" width="240"/>
 
 | 컴포넌트 | 설명 |
 |----------|------|
@@ -93,7 +93,7 @@
 ## 4. JidoView
 > 카드를 교환했던 위치를 확인할 수 있는 페이지
 
-<img src="./screenshots/jido.png" width="240"/> <img src="./screenshots/jido_list.png" width="240"/>
+<img src="https://github.com/user-attachments/assets/5214ccbb-652e-4972-86e1-0ba2354b7016" width="240"/> <img src="https://github.com/user-attachments/assets/e2bf0832-030e-4ee8-83c1-5d9415d46597" width="240"/>
 
 | 컴포넌트 | 설명 |
 |----------|------|
