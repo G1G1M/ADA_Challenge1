@@ -7,7 +7,7 @@
 | Dev Backlog 작성하기 | 작성 완료 | Complete | |
 | Challenge1 코드 오류 수정 | Multipeer Connectivity로 카드 교환 시 정보 전달 딜레이 현상 수정 | Complete | |
 | UserDefaults를 SwiftData로 교체 | 기존에 쓰던 UserDefaults를 SwiftData로 교체 | Complete | |
-| Hi-fi 완성하기 | Hi-fi 파일 만들기 + 디자인 완료 | Complete | 최종 디자인 반영해서 수정하기 |
+| Hi-fi 완성하기 | Hi-fi 파일 만들기 + 디자인 완료 | Complete | |
 | 온보딩 페이지 마이페이지 추가 | 온보딩에서 받아온 정보를 마이페이지에서 수정할 수 있게 데이터 연동 및 디자인 구성 | Complete | |
 | 앱 UI 리디자인 (1) — 전체 UI | 카드 교환 앱에 맞는 전반적인 디자인으로 수정 | Complete | |
 | 앱 UI 리디자인 (2) — 디테일 수정 | 딕셔너리뷰 sort, 커스텀 탭바 변경, 카드 상세 360도 회전 | Complete | |
